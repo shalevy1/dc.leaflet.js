@@ -1,6 +1,6 @@
 dc.leaflet.js
 =============
-This extension provides support for DC.js charts in a Leaflet.js map.
+This library provides support for DC.js charts in a Leaflet.js map. It is a fork of Boyan Yurukov's dc.js extension, upgraded to a full library and updated for dc.js 2.0+.
 
 Demo
 =============
