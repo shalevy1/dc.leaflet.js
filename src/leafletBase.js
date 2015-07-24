@@ -7,14 +7,26 @@ dc_leaflet.leafletBase = function(_chart) {
     var _defaultCenter=false;
     var _defaultZoom=false;
 
+    var _createLeaflet = function(root) {
+        return L.map(root.node(),_mapOptions);
+    };
+
     var _tiles=function(map) {
         L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
             attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
         }).addTo(map);
     };
 
+    _chart.createLeaflet = function(_) {
+        if(!arguments.length) {
+            return _createLeaflet;
+        }
+        _createLeaflet = _;
+        return _chart;
+    };
+
     _chart._doRender = function() {
-        _map = L.map(_chart.root().node(),_mapOptions);
+        _map = _createLeaflet(_chart.root());
         if (_defaultCenter && _defaultZoom) {
             _map.setView(_chart.toLocArray(_defaultCenter), _defaultZoom);
         }

@@ -1,5 +1,5 @@
 /*!
- *  dc.leaflet 0.1.0
+ *  dc.leaflet 0.2.0
  *  http://dc-js.github.io/dc.leaflet.js/
  *  Copyright 2015 Boyan Yurukov and the dc.leaflet Developers
  *  https://github.com/dc-js/dc.leaflet.js/blob/master/AUTHORS
@@ -20,7 +20,7 @@
 'use strict';
 
 var dc_leaflet = {
-    version: '0.1.0'
+    version: '0.2.0'
 };
 
 dc_leaflet.leafletBase = function(_chart) {
@@ -32,14 +32,26 @@ dc_leaflet.leafletBase = function(_chart) {
     var _defaultCenter=false;
     var _defaultZoom=false;
 
+    var _createLeaflet = function(root) {
+        return L.map(root.node(),_mapOptions);
+    };
+
     var _tiles=function(map) {
         L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
             attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
         }).addTo(map);
     };
 
+    _chart.createLeaflet = function(_) {
+        if(!arguments.length) {
+            return _createLeaflet;
+        }
+        _createLeaflet = _;
+        return _chart;
+    };
+
     _chart._doRender = function() {
-        _map = L.map(_chart.root().node(),_mapOptions);
+        _map = _createLeaflet(_chart.root());
         if (_defaultCenter && _defaultZoom) {
             _map.setView(_chart.toLocArray(_defaultCenter), _defaultZoom);
         }
