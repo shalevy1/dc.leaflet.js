@@ -8,9 +8,10 @@
 
 	<meta charset="UTF-8">
 
-	<link type="text/css" href="lib/leaflet.css" rel="stylesheet"/>
-	<link type="text/css" href="lib/leaflet.markercluster.css" rel="stylesheet"/>
-	<link type="text/css" href="lib/dc.css" rel="stylesheet"/>
+	<link type="text/css" href="css/leaflet.css" rel="stylesheet"/>
+	<link type="text/css" href="css/MarkerCluster.Default.css" rel="stylesheet"/>
+	<link type="text/css" href="css/MarkerCluster.css" rel="stylesheet"/>
+	<link type="text/css" href="css/dc.css" rel="stylesheet"/>
 
   <style>
     #holder {
@@ -55,15 +56,15 @@
   </div>
 </div>
 
-<script type="text/javascript" src="lib/d3.js"></script>
-<script type="text/javascript" src="lib/crossfilter.js"></script>
-<script type="text/javascript" src="lib/dc.js"></script>
-<script type="text/javascript" src="lib/leaflet.js"></script>
+<script type="text/javascript" src="js/d3.js"></script>
+<script type="text/javascript" src="js/crossfilter.js"></script>
+<script type="text/javascript" src="js/dc.js"></script>
+<script type="text/javascript" src="js/leaflet.js"></script>
 
 <!--Optional-->
-<script type="text/javascript" src="lib/leaflet.markercluster.js"></script>
+<script type="text/javascript" src="js/leaflet.markercluster.js"></script>
 
-<script type="text/javascript" src="dc.leaflet.js"></script>
+<script type="text/javascript" src="js/dc.leaflet.js"></script>
 <script type="text/javascript">
 
 /*     Markers      */
@@ -79,14 +80,14 @@ function drawMarkerSelect(data) {
 	var facilities = xf.dimension(function(d) { return d.geo; });
 	var facilitiesGroup = facilities.group().reduceCount();
 
-  dc.leafletMarkerChart("#demo1 .map",groupname)
+  dc_leaflet.markerChart("#demo1 .map",groupname)
       .dimension(facilities)
       .group(facilitiesGroup)
       .width(600)
 	    .height(400)
       .center([42.69,25.42])
       .zoom(7)
-      .cluster(true);  
+      .cluster(true);
 
 	var types = xf.dimension(function(d) { return d.type; });
 	var typesGroup = types.group().reduceCount();
@@ -111,7 +112,7 @@ function drawMarkerArea(data) {
 	var facilities = xf.dimension(function(d) { return d.geo; });
 	var facilitiesGroup = facilities.group().reduceCount();
 
-  dc.leafletMarkerChart("#demo2 .map",groupname)
+  dc_leaflet.markerChart("#demo2 .map",groupname)
       .dimension(facilities)
       .group(facilitiesGroup)
       .width(600)
@@ -119,7 +120,7 @@ function drawMarkerArea(data) {
       .center([42.69,25.42])
       .zoom(7)
       .renderPopup(false)
-      .filterByArea(true);  
+      .filterByArea(true);
 
 	var types = xf.dimension(function(d) { return d.type; });
 	var typesGroup = types.group().reduceCount();
@@ -172,7 +173,7 @@ function drawChoropleth(data,geojson) {
 	var facilities = xf.dimension(function(d) { return d.code; });
 	var facilitiesGroup = facilities.group().reduceSum(function(d) { return d.value;});
 
-  dc.leafletChoroplethChart("#demo3 .map",groupname)
+  dc_leaflet.choroplethChart("#demo3 .map",groupname)
       .dimension(facilities)
       .group(facilitiesGroup)
       .width(600)
@@ -194,7 +195,7 @@ function drawChoropleth(data,geojson) {
       .renderPopup(true)
       .popup(function(d,feature) {
         return feature.properties.nameEn+" : "+d.value;
-      });  
+      });
 
 	var types = xf.dimension(function(d) { return d.type; });
 	var typesGroup = types.group().reduceSum(function(d) { return d.value;});
@@ -209,9 +210,9 @@ function drawChoropleth(data,geojson) {
       })
 	    .renderLabel(false)
 	    .renderTitle(true)
-      .title(function(d) { 
+      .title(function(d) {
         var age = d.data.key.substr(6);
-        if (age.indexOf("p")==-1) 
+        if (age.indexOf("p")==-1)
           age="Between "+(+age-4)+"-"+age;
         else
           age="Over "+age.substr(0,2);
