@@ -228,7 +228,15 @@ module.exports = function (grunt) {
                             'node_modules/crossfilter/crossfilter.js'
                         ],
                         dest: '<%= conf.web %>/js/'
-                    }
+                    },
+                    {
+                        expand: true,
+                        flatten: true,
+                        src: [
+                            'node_modules/leaflet/dist/images/*'
+                        ],
+                        dest: '<%= conf.web %>/js/images'
+                    },
                 ]
             }
         },
