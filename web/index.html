@@ -211,7 +211,7 @@ function drawChoropleth(data,geojson) {
 	    .renderLabel(false)
 	    .renderTitle(true)
       .title(function(d) {
-        var age = d.data.key.substr(6);
+        var age = d.key.substr(6);
         if (age.indexOf("p")==-1)
           age="Between "+(+age-4)+"-"+age;
         else

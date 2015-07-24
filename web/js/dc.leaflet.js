@@ -38,16 +38,17 @@ dc_leaflet.leafletBase = function(_chart) {
         }).addTo(map);
     };
 
-    _chart.doRender = function() {
+    _chart._doRender = function() {
         _map = L.map(_chart.root().node(),_mapOptions);
-        if (_defaultCenter && _defaultZoom)
+        if (_defaultCenter && _defaultZoom) {
             _map.setView(_chart.toLocArray(_defaultCenter), _defaultZoom);
+        }
 
         _chart.tiles()(_map);
 
         _chart._postRender();
 
-        return _chart.doRedraw();
+        return _chart._doRedraw();
     };
 
     _chart._postRender = function() {
@@ -55,25 +56,33 @@ dc_leaflet.leafletBase = function(_chart) {
     };
 
     _chart.mapOptions = function(_) {
-        if (!arguments.length) return _mapOptions;
+        if (!arguments.length) {
+            return _mapOptions;
+        }
         _mapOptions = _;
         return _chart;
     };
 
     _chart.center = function(_) {
-        if (!arguments.length) return _defaultCenter;
+        if (!arguments.length) {
+            return _defaultCenter;
+        }
         _defaultCenter = _;
         return _chart;
     };
 
     _chart.zoom = function(_) {
-        if (!arguments.length) return _defaultZoom;
+        if (!arguments.length) {
+            return _defaultZoom;
+        }
         _defaultZoom = _;
         return _chart;
     };
 
     _chart.tiles = function(_) {
-        if (!arguments.length) return _tiles;
+        if (!arguments.length) {
+            return _tiles;
+        }
         _tiles = _;
         return _chart;
     };
@@ -83,7 +92,7 @@ dc_leaflet.leafletBase = function(_chart) {
     };
 
     _chart.toLocArray = function(value) {
-        if (typeof value == "string") {
+        if (typeof value === "string") {
             // expects '11.111,1.111'
             value = value.split(",");
         }
@@ -138,8 +147,9 @@ dc_leaflet.markerChart = function(parent, chartGroup) {
 
     _chart._postRender = function() {
         if (_chart.brushOn()) {
-            if (_filterByArea)
+            if (_filterByArea) {
                 _chart.filterHandler(doFilterByArea);
+            }
 
             _chart.map().on('zoomend moveend', zoomFilter, this );
             if (!_filterByArea)
@@ -147,19 +157,22 @@ dc_leaflet.markerChart = function(parent, chartGroup) {
             _chart.map().on('zoomstart', zoomStart, this);
         }
 
-        if (_cluster)
+        if (_cluster) {
             _layerGroup = new L.MarkerClusterGroup(_clusterOptions?_clusterOptions:null);
-        else
+        }
+        else {
             _layerGroup = new L.LayerGroup();
+        }
         _chart.map().addLayer(_layerGroup);
     };
 
-    _chart.doRedraw = function() {
-        var groups = _chart.computeOrderedGroups().filter(function (d) {
+    _chart._doRedraw = function() {
+        var groups = _chart._computeOrderedGroups(_chart.data()).filter(function (d) {
             return _chart.valueAccessor()(d) !== 0;
         });
-        if (_currentGroups && _currentGroups.toString()==groups.toString())
+        if (_currentGroups && _currentGroups.toString() === groups.toString()) {
             return;
+        }
         _currentGroups=groups;
 
         if (_rebuildMarkers) {
@@ -171,77 +184,102 @@ dc_leaflet.markerChart = function(parent, chartGroup) {
         groups.forEach(function(v,i) {
             var key = _chart.keyAccessor()(v);
             var marker = null;
-            if (!_rebuildMarkers && key in _markerList)
+            if (!_rebuildMarkers && key in _markerList) {
                 marker = _markerList[key];
-            else
+            }
+            else {
                 marker = createmarker(v,key);
-            if (!_chart.cluster())
+            }
+            if (!_chart.cluster()) {
                 _layerGroup.addLayer(marker);
-            else
+            }
+            else {
                 addList.push(marker);
+            }
         });
 
-        if (_chart.cluster() && addList.length>0)
+        if (_chart.cluster() && addList.length > 0) {
             _layerGroup.addLayers(addList);
+        }
     };
 
     _chart.locationAccessor = function(_) {
-        if (!arguments.length) return _location;
+        if (!arguments.length) {
+            return _location;
+        }
         _location= _;
         return _chart;
     };
 
     _chart.marker = function(_) {
-        if (!arguments.length) return _marker;
+        if (!arguments.length) {
+            return _marker;
+        }
         _marker= _;
         return _chart;
     };
 
     _chart.icon = function(_) {
-        if (!arguments.length) return _icon;
+        if (!arguments.length) {
+            return _icon;
+        }
         _icon= _;
         return _chart;
     };
 
     _chart.popup = function(_) {
-        if (!arguments.length) return _popup;
+        if (!arguments.length) {
+            return _popup;
+        }
         _popup= _;
         return _chart;
     };
 
     _chart.renderPopup = function(_) {
-        if (!arguments.length) return _renderPopup;
+        if (!arguments.length) {
+            return _renderPopup;
+        }
         _renderPopup = _;
         return _chart;
     };
 
 
     _chart.cluster = function(_) {
-        if (!arguments.length) return _cluster;
+        if (!arguments.length) {
+            return _cluster;
+        }
         _cluster = _;
         return _chart;
     };
 
     _chart.clusterOptions = function(_) {
-        if (!arguments.length) return _clusterOptions;
+        if (!arguments.length) {
+            return _clusterOptions;
+        }
         _clusterOptions = _;
         return _chart;
     };
 
     _chart.rebuildMarkers = function(_) {
-        if (!arguments.length) return _rebuildMarkers;
+        if (!arguments.length) {
+            return _rebuildMarkers;
+        }
         _rebuildMarkers = _;
         return _chart;
     };
 
     _chart.brushOn = function(_) {
-        if (!arguments.length) return _brushOn;
+        if (!arguments.length) {
+            return _brushOn;
+        }
         _brushOn = _;
         return _chart;
     };
 
     _chart.filterByArea = function(_) {
-        if (!arguments.length) return _filterByArea;
+        if (!arguments.length) {
+            return _filterByArea;
+        }
         _filterByArea = _;
         return _chart;
     };
@@ -253,10 +291,12 @@ dc_leaflet.markerChart = function(parent, chartGroup) {
     var createmarker = function(v,k) {
         var marker = _marker(v);
         marker.key = k;
-        if (_chart.renderPopup())
+        if (_chart.renderPopup()) {
             marker.bindPopup(_chart.popup()(v,marker));
-        if (_chart.brushOn() && !_filterByArea)
+        }
+        if (_chart.brushOn() && !_filterByArea) {
             marker.on("click",selectFilter);
+        }
         _markerList[k]=marker;
         return marker;
     };
@@ -266,16 +306,19 @@ dc_leaflet.markerChart = function(parent, chartGroup) {
     };
 
     var zoomFilter = function(e) {
-	if (e.type=="moveend" && (_zooming || e.hard))
+	if (e.type === "moveend" && (_zooming || e.hard)) {
 	    return;
+        }
         _zooming=false;
 
         if (_filterByArea) {
             var filter;
-            if (_chart.map().getCenter().equals(_chart.center()) && _chart.map().getZoom()==_chart.zoom())
+            if (_chart.map().getCenter().equals(_chart.center()) && _chart.map().getZoom() === _chart.zoom()) {
 		filter = null;
-	    else
+            }
+	    else {
 		filter = _chart.map().getBounds();
+            }
             dc.events.trigger(function () {
                 _chart.filter(null);
                 if (filter) {
@@ -285,13 +328,14 @@ dc_leaflet.markerChart = function(parent, chartGroup) {
                 }
                 dc.redrawAll(_chart.chartGroup());
             });
-        } else if (_chart.filter() && (e.type=="click" ||
-                                       (_chart.filter() in _markerList &&
+        } else if (_chart.filter() && (e.type === "click" ||
+                                       (_markerList.indexOf(_chart.filter()) !== -1 &&
                                         !_chart.map().getBounds().contains(_markerList[_chart.filter()].getLatLng())))) {
             dc.events.trigger(function () {
                 _chart.filter(null);
-                if (_renderPopup)
+                if (_renderPopup) {
                     _chart.map().closePopup();
+                }
                 dc.redrawAll(_chart.chartGroup());
             });
         }
@@ -301,13 +345,15 @@ dc_leaflet.markerChart = function(parent, chartGroup) {
         _chart.dimension().filter(null);
 	if (filters && filters.length>0) {
 	    _chart.dimension().filterFunction(function(d) {
-                if (!(d in _markerList))
+                if (!(d in _markerList)) {
                     return false;
+                }
                 var locO = _markerList[d].getLatLng();
                 return locO && filters[0].contains(locO);
 	    });
-            if (!_innerFilter && _chart.map().getBounds().toString!=filters[0].toString())
-                _chart.map().fitBounds(filters[0])
+            if (!_innerFilter && _chart.map().getBounds().toString !== filters[0].toString()) {
+                _chart.map().fitBounds(filters[0]);
+            }
         }
     };
 
@@ -346,13 +392,14 @@ dc_leaflet.choroplethChart = function(parent, chartGroup) {
 
     var _featureStyle = function(feature) {
         var options = _chart.featureOptions();
-        if (options instanceof Function)
+        if (options instanceof Function) {
             options=options(feature);
+        }
         options = JSON.parse(JSON.stringify(options));
         var v = _dataMap[_chart.featureKeyAccessor()(feature)];
         if (v && v.d) {
             options.fillColor=_chart.getColor(v.d,v.i);
-            if (_chart.filters().indexOf(v.d.key)!=-1) {
+            if (_chart.filters().indexOf(v.d.key) !== -1) {
                 options.opacity=0.8;
                 options.fillOpacity=1;
             }
@@ -372,53 +419,67 @@ dc_leaflet.choroplethChart = function(parent, chartGroup) {
         _chart.map().addLayer(_geojsonLayer);
     };
 
-    _chart.doRedraw = function() {
+    _chart._doRedraw = function() {
         _geojsonLayer.clearLayers();
         _dataMap=[];
-        _chart.computeOrderedGroups().forEach(function (d,i) {
+        _chart._computeOrderedGroups(_chart.data()).forEach(function (d, i) {
             _dataMap[_chart.keyAccessor()(d)] = {'d':d,'i':i};
         });
         _geojsonLayer.addData(_chart.geojson());
     };
 
     _chart.geojson = function(_) {
-        if (!arguments.length) return _geojson;
+        if (!arguments.length) {
+            return _geojson;
+        }
         _geojson = _;
         return _chart;
     };
 
     _chart.featureOptions = function(_) {
-        if (!arguments.length) return _featureOptions;
+        if (!arguments.length) {
+            return _featureOptions;
+        }
         _featureOptions = _;
         return _chart;
     };
 
     _chart.featureKeyAccessor = function(_) {
-        if (!arguments.length) return _featureKey;
+        if (!arguments.length) {
+            return _featureKey;
+        }
         _featureKey= _;
         return _chart;
     };
 
     _chart.featureStyle = function(_) {
-        if (!arguments.length) return _featureStyle;
+        if (!arguments.length) {
+            return _featureStyle;
+        }
         _featureStyle= _;
         return _chart;
     };
 
     _chart.popup = function(_) {
-        if (!arguments.length) return _popup;
+        if (!arguments.length) {
+            return _popup;
+        }
         _popup= _;
         return _chart;
     };
 
     _chart.renderPopup = function(_) {
-        if (!arguments.length) return _renderPopup;
+        if (!arguments.length) {
+            return _renderPopup;
+        }
         _renderPopup = _;
         return _chart;
     };
 
     _chart.brushOn = function(_) {
-        if (!arguments.length) return _brushOn;
+        if (!arguments.length) {
+            return _brushOn;
+        }
         _brushOn = _;
         return _chart;
     };
@@ -435,7 +496,9 @@ dc_leaflet.choroplethChart = function(parent, chartGroup) {
     };
 
     var selectFilter = function(e) {
-        if (!e.target) return;
+        if (!e.target) {
+            return;
+        }
         var filter = e.target.key;
         dc.events.trigger(function () {
             _chart.filter(filter);

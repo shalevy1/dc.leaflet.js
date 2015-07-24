@@ -21,13 +21,14 @@ dc_leaflet.choroplethChart = function(parent, chartGroup) {
 
     var _featureStyle = function(feature) {
         var options = _chart.featureOptions();
-        if (options instanceof Function)
+        if (options instanceof Function) {
             options=options(feature);
+        }
         options = JSON.parse(JSON.stringify(options));
         var v = _dataMap[_chart.featureKeyAccessor()(feature)];
         if (v && v.d) {
             options.fillColor=_chart.getColor(v.d,v.i);
-            if (_chart.filters().indexOf(v.d.key)!=-1) {
+            if (_chart.filters().indexOf(v.d.key) !== -1) {
                 options.opacity=0.8;
                 options.fillOpacity=1;
             }
@@ -47,53 +48,67 @@ dc_leaflet.choroplethChart = function(parent, chartGroup) {
         _chart.map().addLayer(_geojsonLayer);
     };
 
-    _chart.doRedraw = function() {
+    _chart._doRedraw = function() {
         _geojsonLayer.clearLayers();
         _dataMap=[];
-        _chart.computeOrderedGroups().forEach(function (d,i) {
+        _chart._computeOrderedGroups(_chart.data()).forEach(function (d, i) {
             _dataMap[_chart.keyAccessor()(d)] = {'d':d,'i':i};
         });
         _geojsonLayer.addData(_chart.geojson());
     };
 
     _chart.geojson = function(_) {
-        if (!arguments.length) return _geojson;
+        if (!arguments.length) {
+            return _geojson;
+        }
         _geojson = _;
         return _chart;
     };
 
     _chart.featureOptions = function(_) {
-        if (!arguments.length) return _featureOptions;
+        if (!arguments.length) {
+            return _featureOptions;
+        }
         _featureOptions = _;
         return _chart;
     };
 
     _chart.featureKeyAccessor = function(_) {
-        if (!arguments.length) return _featureKey;
+        if (!arguments.length) {
+            return _featureKey;
+        }
         _featureKey= _;
         return _chart;
     };
 
     _chart.featureStyle = function(_) {
-        if (!arguments.length) return _featureStyle;
+        if (!arguments.length) {
+            return _featureStyle;
+        }
         _featureStyle= _;
         return _chart;
     };
 
     _chart.popup = function(_) {
-        if (!arguments.length) return _popup;
+        if (!arguments.length) {
+            return _popup;
+        }
         _popup= _;
         return _chart;
     };
 
     _chart.renderPopup = function(_) {
-        if (!arguments.length) return _renderPopup;
+        if (!arguments.length) {
+            return _renderPopup;
+        }
         _renderPopup = _;
         return _chart;
     };
 
     _chart.brushOn = function(_) {
-        if (!arguments.length) return _brushOn;
+        if (!arguments.length) {
+            return _brushOn;
+        }
         _brushOn = _;
         return _chart;
     };
@@ -110,7 +125,9 @@ dc_leaflet.choroplethChart = function(parent, chartGroup) {
     };
 
     var selectFilter = function(e) {
-        if (!e.target) return;
+        if (!e.target) {
+            return;
+        }
         var filter = e.target.key;
         dc.events.trigger(function () {
             _chart.filter(filter);

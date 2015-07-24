@@ -13,16 +13,17 @@ dc_leaflet.leafletBase = function(_chart) {
         }).addTo(map);
     };
 
-    _chart.doRender = function() {
+    _chart._doRender = function() {
         _map = L.map(_chart.root().node(),_mapOptions);
-        if (_defaultCenter && _defaultZoom)
+        if (_defaultCenter && _defaultZoom) {
             _map.setView(_chart.toLocArray(_defaultCenter), _defaultZoom);
+        }
 
         _chart.tiles()(_map);
 
         _chart._postRender();
 
-        return _chart.doRedraw();
+        return _chart._doRedraw();
     };
 
     _chart._postRender = function() {
@@ -30,25 +31,33 @@ dc_leaflet.leafletBase = function(_chart) {
     };
 
     _chart.mapOptions = function(_) {
-        if (!arguments.length) return _mapOptions;
+        if (!arguments.length) {
+            return _mapOptions;
+        }
         _mapOptions = _;
         return _chart;
     };
 
     _chart.center = function(_) {
-        if (!arguments.length) return _defaultCenter;
+        if (!arguments.length) {
+            return _defaultCenter;
+        }
         _defaultCenter = _;
         return _chart;
     };
 
     _chart.zoom = function(_) {
-        if (!arguments.length) return _defaultZoom;
+        if (!arguments.length) {
+            return _defaultZoom;
+        }
         _defaultZoom = _;
         return _chart;
     };
 
     _chart.tiles = function(_) {
-        if (!arguments.length) return _tiles;
+        if (!arguments.length) {
+            return _tiles;
+        }
         _tiles = _;
         return _chart;
     };
@@ -58,7 +67,7 @@ dc_leaflet.leafletBase = function(_chart) {
     };
 
     _chart.toLocArray = function(value) {
-        if (typeof value == "string") {
+        if (typeof value === "string") {
             // expects '11.111,1.111'
             value = value.split(",");
         }
