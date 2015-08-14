@@ -140,12 +140,12 @@ dc_leaflet.markerChart = function(parent, chartGroup) {
 
     var _marker = function(d,map) {
         var marker = new L.Marker(_chart.toLocArray(_chart.locationAccessor()(d)),{
-  	    title: _chart.renderTitle() ? _chart.title()(d) : '',
-  	    alt: _chart.renderTitle() ? _chart.title()(d) : '',
-	    icon: _icon(),
-	    clickable: _chart.renderPopup() || (_chart.brushOn() && !_filterByArea),
-   	    draggable: false
-	});
+            title: _chart.renderTitle() ? _chart.title()(d) : '',
+            alt: _chart.renderTitle() ? _chart.title()(d) : '',
+            icon: _icon(),
+            clickable: _chart.renderPopup() || (_chart.brushOn() && !_filterByArea),
+            draggable: false
+        });
         return marker;
     };
 
@@ -318,18 +318,18 @@ dc_leaflet.markerChart = function(parent, chartGroup) {
     };
 
     var zoomFilter = function(e) {
-	if (e.type === "moveend" && (_zooming || e.hard)) {
-	    return;
+        if (e.type === "moveend" && (_zooming || e.hard)) {
+            return;
         }
         _zooming=false;
 
         if (_filterByArea) {
             var filter;
             if (_chart.map().getCenter().equals(_chart.center()) && _chart.map().getZoom() === _chart.zoom()) {
-		filter = null;
+                filter = null;
             }
-	    else {
-		filter = _chart.map().getBounds();
+            else {
+                filter = _chart.map().getBounds();
             }
             dc.events.trigger(function () {
                 _chart.filter(null);
@@ -355,14 +355,14 @@ dc_leaflet.markerChart = function(parent, chartGroup) {
 
     var doFilterByArea = function(dimension, filters) {
         _chart.dimension().filter(null);
-	if (filters && filters.length>0) {
-	    _chart.dimension().filterFunction(function(d) {
+        if (filters && filters.length>0) {
+            _chart.dimension().filterFunction(function(d) {
                 if (!(d in _markerList)) {
                     return false;
                 }
                 var locO = _markerList[d].getLatLng();
                 return locO && filters[0].contains(locO);
-	    });
+            });
             if (!_innerFilter && _chart.map().getBounds().toString !== filters[0].toString()) {
                 _chart.map().fitBounds(filters[0]);
             }
@@ -425,7 +425,7 @@ dc_leaflet.choroplethChart = function(parent, chartGroup) {
 
     _chart._postRender = function() {
         _geojsonLayer=L.geoJson(_chart.geojson(),{
-	    style: _chart.featureStyle(),
+            style: _chart.featureStyle(),
             onEachFeature: processFeatures
         });
         _chart.map().addLayer(_geojsonLayer);
@@ -500,8 +500,8 @@ dc_leaflet.choroplethChart = function(parent, chartGroup) {
         var v = _dataMap[_chart.featureKeyAccessor()(feature)];
         if (v && v.d) {
             layer.key=v.d.key;
-  	    if (_chart.renderPopup())
-		layer.bindPopup(_chart.popup()(v.d,feature));
+            if (_chart.renderPopup())
+                layer.bindPopup(_chart.popup()(v.d,feature));
             if (_chart.brushOn())
                 layer.on("click",selectFilter);
         }

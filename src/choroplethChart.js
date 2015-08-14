@@ -42,7 +42,7 @@ dc_leaflet.choroplethChart = function(parent, chartGroup) {
 
     _chart._postRender = function() {
         _geojsonLayer=L.geoJson(_chart.geojson(),{
-	    style: _chart.featureStyle(),
+            style: _chart.featureStyle(),
             onEachFeature: processFeatures
         });
         _chart.map().addLayer(_geojsonLayer);
@@ -117,8 +117,8 @@ dc_leaflet.choroplethChart = function(parent, chartGroup) {
         var v = _dataMap[_chart.featureKeyAccessor()(feature)];
         if (v && v.d) {
             layer.key=v.d.key;
-  	    if (_chart.renderPopup())
-		layer.bindPopup(_chart.popup()(v.d,feature));
+            if (_chart.renderPopup())
+                layer.bindPopup(_chart.popup()(v.d,feature));
             if (_chart.brushOn())
                 layer.on("click",selectFilter);
         }

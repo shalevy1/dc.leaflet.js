@@ -60,6 +60,7 @@
 <script type="text/javascript" src="js/crossfilter.js"></script>
 <script type="text/javascript" src="js/dc.js"></script>
 <script type="text/javascript" src="js/leaflet.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/d3-tip/0.6.7/d3-tip.js"></script>
 
 <!--Optional-->
 <script type="text/javascript" src="js/leaflet.markercluster.js"></script>
@@ -141,6 +142,14 @@
 
   var demo2_geojson=false;
   var demo2=false;
+
+var tip = d3.tip()
+.attr("class", "d3-tip")
+.html(function(d) {
+    console.log("d:", d) //returns undefined
+    return "hello";
+});
+
   d3.json("bulgaria.geojson", function(data) {
       demo2_geojson=data;
       if (demo2)
@@ -195,7 +204,12 @@
           .renderPopup(true)
           .popup(function(d,feature) {
               return feature.properties.nameEn+" : "+d.value;
-          });
+          })
+          .renderlet(function(chart) {
+                chart.selectAll("path").call(tip);
+                chart.selectAll("path").on("mouseover", tip.show);
+            });
+
 
       var types = xf.dimension(function(d) { return d.type; });
       var typesGroup = types.group().reduceSum(function(d) { return d.value;});

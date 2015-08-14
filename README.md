@@ -17,12 +17,12 @@ The charts should work with older versions with minor changes.
 
 Usage
 =============
-There are two charts currently implemented - markers and choropleth. They extend the base abstract leaflet chart. Both support selection of datapoints and update in real time. Styling and map options can be set directly to the map object and though functions in the chart. Check the [Leaflet reference](http://leafletjs.com/reference.html#map-options) for more information on the specific map, marker and geojson options. 
+There are two charts currently implemented - markers and choropleth. They extend the base abstract leaflet chart. Both support selection of datapoints and update in real time. Styling and map options can be set directly to the map object and though functions in the chart. Check the [Leaflet reference](http://leafletjs.com/reference.html#map-options) for more information on the specific map, marker and geojson options.
 Location can be set as either 'lat,lng' string or as an array [lat,lng].
 
 Marker chart
 --------------------
-Each group is presented as one marker on the map. 
+Each group is presented as one marker on the map.
 ```
 dc.leafletMarkerChart(parent,chartGroup)
   .mapOptions({..})       - set leaflet specific options to the map object; Default: Leaflet default options
