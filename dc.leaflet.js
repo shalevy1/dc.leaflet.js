@@ -1,5 +1,5 @@
 /*!
- *  dc.leaflet 0.2.0
+ *  dc.leaflet 0.2.1
  *  http://dc-js.github.io/dc.leaflet.js/
  *  Copyright 2015 Boyan Yurukov and the dc.leaflet Developers
  *  https://github.com/dc-js/dc.leaflet.js/blob/master/AUTHORS
@@ -20,11 +20,13 @@
 'use strict';
 
 var dc_leaflet = {
-    version: '0.2.0'
+    version: '0.2.1'
 };
 
 dc_leaflet.leafletBase = function(_chart) {
-    _chart = dc.baseChart(_chart);
+    _chart = dc.marginMixin(dc.baseChart(_chart));
+
+    _chart.margins({left:0, top:0, right:0, bottom:0});
 
     var _map;
 
@@ -32,8 +34,19 @@ dc_leaflet.leafletBase = function(_chart) {
     var _defaultCenter=false;
     var _defaultZoom=false;
 
+    var _cachedHandlers = {};
+
     var _createLeaflet = function(root) {
-        return L.map(root.node(),_mapOptions);
+        // append sub-div if not there, to allow client to put stuff (reset link etc.)
+        // in main div. might also use relative positioning here, for now assume
+        // appending will put in right position
+        var child_div = root.selectAll('div.dc-leaflet')
+                .data([0]).enter()
+                .append('div').attr('class', 'dc-leaflet')
+                .style('width', _chart.effectiveWidth())
+                .style('height', _chart.effectiveHeight());
+
+        return L.map(child_div.node(),_mapOptions);
     };
 
     var _tiles=function(map) {
@@ -52,6 +65,9 @@ dc_leaflet.leafletBase = function(_chart) {
 
     _chart._doRender = function() {
         _map = _createLeaflet(_chart.root());
+        for(var ev in _cachedHandlers)
+            _map.on(ev, _cachedHandlers[ev]);
+
         if (_defaultCenter && _defaultZoom) {
             _map.setView(_chart.toLocArray(_defaultCenter), _defaultZoom);
         }
@@ -111,6 +127,21 @@ dc_leaflet.leafletBase = function(_chart) {
         // else expects [11.111,1.111]
         return value;
     };
+
+    // combine Leaflet events into d3 & dc events
+    dc.override(_chart, 'on', function(event, callback) {
+        var leaflet_events = ['zoomend', 'moveend'];
+        if(leaflet_events.indexOf(event) >= 0) {
+            if(_map) {
+                _map.on(event, callback);
+            }
+            else {
+                _cachedHandlers[event] = callback;
+            }
+            return this;
+        }
+        else return _chart._on(event, callback);
+    });
 
     return _chart;
 };
