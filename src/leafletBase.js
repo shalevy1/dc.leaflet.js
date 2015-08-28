@@ -1,5 +1,7 @@
 dc_leaflet.leafletBase = function(_chart) {
-    _chart = dc.baseChart(_chart);
+    _chart = dc.marginMixin(dc.baseChart(_chart));
+
+    _chart.margins({left:0, top:0, right:0, bottom:0});
 
     var _map;
 
@@ -10,7 +12,16 @@ dc_leaflet.leafletBase = function(_chart) {
     var _cachedHandlers = {};
 
     var _createLeaflet = function(root) {
-        return L.map(root.node(),_mapOptions);
+        // append sub-div if not there, to allow client to put stuff (reset link etc.)
+        // in main div. might also use relative positioning here, for now assume
+        // appending will put in right position
+        var child_div = root.selectAll('div.dc-leaflet')
+                .data([0]).enter()
+                .append('div').attr('class', 'dc-leaflet')
+                .style('width', _chart.effectiveWidth())
+                .style('height', _chart.effectiveHeight());
+
+        return L.map(child_div.node(),_mapOptions);
     };
 
     var _tiles=function(map) {
