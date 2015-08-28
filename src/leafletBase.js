@@ -7,6 +7,8 @@ dc_leaflet.leafletBase = function(_chart) {
     var _defaultCenter=false;
     var _defaultZoom=false;
 
+    var _cachedHandlers = {};
+
     var _createLeaflet = function(root) {
         return L.map(root.node(),_mapOptions);
     };
@@ -27,6 +29,9 @@ dc_leaflet.leafletBase = function(_chart) {
 
     _chart._doRender = function() {
         _map = _createLeaflet(_chart.root());
+        for(var ev in _cachedHandlers)
+            _map.on(ev, _cachedHandlers[ev]);
+
         if (_defaultCenter && _defaultZoom) {
             _map.setView(_chart.toLocArray(_defaultCenter), _defaultZoom);
         }
@@ -86,6 +91,21 @@ dc_leaflet.leafletBase = function(_chart) {
         // else expects [11.111,1.111]
         return value;
     };
+
+    // combine Leaflet events into d3 & dc events
+    dc.override(_chart, 'on', function(event, callback) {
+        var leaflet_events = ['zoomend', 'moveend'];
+        if(leaflet_events.indexOf(event) >= 0) {
+            if(_map) {
+                _map.on(event, callback);
+            }
+            else {
+                _cachedHandlers[event] = callback;
+            }
+            return this;
+        }
+        else return _chart._on(event, callback);
+    });
 
     return _chart;
 };
