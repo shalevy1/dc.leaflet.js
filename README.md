@@ -1,14 +1,15 @@
 dc.leaflet.js
 =============
-This library provides support for DC.js charts in a Leaflet.js map. It is a fork of Boyan Yurukov's dc.js extension, upgraded to a full library and updated for dc.js 2.0+.
+This library provides support for DC.js charts in a Leaflet.js map. It is a fork of Boyan Yurukov's dc.js extension, upgraded to a full library with AMD support and updated for dc.js 2.0+.
 
 Demo
 =============
-Examples can be found here:
-[http://opendata.yurukov.net/demo/dcjs_leaflet/](http://opendata.yurukov.net/demo/dcjs_leaflet/)
+Examples of each of the charts can be found here:
+[http://dc-js.github.io/dc.leaflet.js/](http://dc-js.github.io/dc.leaflet.js/)
 
 Requirements
 =============
+(These will be installed by `npm install`)
 *  [dc.js](https://github.com/dc-js/dc.js) 1.7.0 ([crossfilter.js](https://github.com/square/crossfilter) 1.3.7 & [d3.js](https://github.com/mbostock/d3) 3.4.8)
 *  [leaflet.js](https://github.com/Leaflet/Leaflet) 0.7.2
 *  [leaflet.markercluster.js](https://github.com/Leaflet/Leaflet.markercluster) 0.4.0 (in case you use the cluster option)
@@ -24,7 +25,7 @@ Marker chart
 --------------------
 Each group is presented as one marker on the map.
 ```
-dc.leafletMarkerChart(parent,chartGroup)
+dc_leaflet.markerChart(parent,chartGroup)
   .mapOptions({..})       - set leaflet specific options to the map object; Default: Leaflet default options
   .center([1.1,1.1])      - initial location
   .zoom(7)                - initial zoom level
@@ -46,7 +47,7 @@ Choropleth chart
 --------------------
 Each group is mapped to an feature on the map
 ```
-dc.leafletChoroplethChart(parent,chartGroup)
+dc_leaflet.choroplethChart(parent,chartGroup)
   .mapOptions({..})       - set leaflet specific options to the map object; Default: Leaflet default options
   .center([1.1,1.1])      - get or set initial location
   .zoom(7)                - get or set initial zoom level
