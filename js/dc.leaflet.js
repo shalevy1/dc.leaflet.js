@@ -1,7 +1,7 @@
 /*!
- *  dc.leaflet 0.1.0
+ *  dc.leaflet 0.2.1
  *  http://dc-js.github.io/dc.leaflet.js/
- *  Copyright 2015 Boyan Yurukov and the dc.leaflet Developers
+ *  Copyright 2014-2015 Boyan Yurukov and the dc.leaflet Developers
  *  https://github.com/dc-js/dc.leaflet.js/blob/master/AUTHORS
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,11 +20,13 @@
 'use strict';
 
 var dc_leaflet = {
-    version: '0.1.0'
+    version: '0.2.1'
 };
 
 dc_leaflet.leafletBase = function(_chart) {
-    _chart = dc.baseChart(_chart);
+    _chart = dc.marginMixin(dc.baseChart(_chart));
+
+    _chart.margins({left:0, top:0, right:0, bottom:0});
 
     var _map;
 
@@ -32,14 +34,40 @@ dc_leaflet.leafletBase = function(_chart) {
     var _defaultCenter=false;
     var _defaultZoom=false;
 
+    var _cachedHandlers = {};
+
+    var _createLeaflet = function(root) {
+        // append sub-div if not there, to allow client to put stuff (reset link etc.)
+        // in main div. might also use relative positioning here, for now assume
+        // appending will put in right position
+        var child_div = root.selectAll('div.dc-leaflet')
+                .data([0]).enter()
+                .append('div').attr('class', 'dc-leaflet')
+                .style('width', _chart.effectiveWidth())
+                .style('height', _chart.effectiveHeight());
+
+        return L.map(child_div.node(),_mapOptions);
+    };
+
     var _tiles=function(map) {
         L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
             attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
         }).addTo(map);
     };
 
+    _chart.createLeaflet = function(_) {
+        if(!arguments.length) {
+            return _createLeaflet;
+        }
+        _createLeaflet = _;
+        return _chart;
+    };
+
     _chart._doRender = function() {
-        _map = L.map(_chart.root().node(),_mapOptions);
+        _map = _createLeaflet(_chart.root());
+        for(var ev in _cachedHandlers)
+            _map.on(ev, _cachedHandlers[ev]);
+
         if (_defaultCenter && _defaultZoom) {
             _map.setView(_chart.toLocArray(_defaultCenter), _defaultZoom);
         }
@@ -100,6 +128,21 @@ dc_leaflet.leafletBase = function(_chart) {
         return value;
     };
 
+    // combine Leaflet events into d3 & dc events
+    dc.override(_chart, 'on', function(event, callback) {
+        var leaflet_events = ['zoomend', 'moveend'];
+        if(leaflet_events.indexOf(event) >= 0) {
+            if(_map) {
+                _map.on(event, callback);
+            }
+            else {
+                _cachedHandlers[event] = callback;
+            }
+            return this;
+        }
+        else return _chart._on(event, callback);
+    });
+
     return _chart;
 };
 
@@ -128,12 +171,12 @@ dc_leaflet.markerChart = function(parent, chartGroup) {
 
     var _marker = function(d,map) {
         var marker = new L.Marker(_chart.toLocArray(_chart.locationAccessor()(d)),{
-  	    title: _chart.renderTitle() ? _chart.title()(d) : '',
-  	    alt: _chart.renderTitle() ? _chart.title()(d) : '',
-	    icon: _icon(),
-	    clickable: _chart.renderPopup() || (_chart.brushOn() && !_filterByArea),
-   	    draggable: false
-	});
+            title: _chart.renderTitle() ? _chart.title()(d) : '',
+            alt: _chart.renderTitle() ? _chart.title()(d) : '',
+            icon: _icon(),
+            clickable: _chart.renderPopup() || (_chart.brushOn() && !_filterByArea),
+            draggable: false
+        });
         return marker;
     };
 
@@ -306,18 +349,18 @@ dc_leaflet.markerChart = function(parent, chartGroup) {
     };
 
     var zoomFilter = function(e) {
-	if (e.type === "moveend" && (_zooming || e.hard)) {
-	    return;
+        if (e.type === "moveend" && (_zooming || e.hard)) {
+            return;
         }
         _zooming=false;
 
         if (_filterByArea) {
             var filter;
             if (_chart.map().getCenter().equals(_chart.center()) && _chart.map().getZoom() === _chart.zoom()) {
-		filter = null;
+                filter = null;
             }
-	    else {
-		filter = _chart.map().getBounds();
+            else {
+                filter = _chart.map().getBounds();
             }
             dc.events.trigger(function () {
                 _chart.filter(null);
@@ -343,14 +386,14 @@ dc_leaflet.markerChart = function(parent, chartGroup) {
 
     var doFilterByArea = function(dimension, filters) {
         _chart.dimension().filter(null);
-	if (filters && filters.length>0) {
-	    _chart.dimension().filterFunction(function(d) {
+        if (filters && filters.length>0) {
+            _chart.dimension().filterFunction(function(d) {
                 if (!(d in _markerList)) {
                     return false;
                 }
                 var locO = _markerList[d].getLatLng();
                 return locO && filters[0].contains(locO);
-	    });
+            });
             if (!_innerFilter && _chart.map().getBounds().toString !== filters[0].toString()) {
                 _chart.map().fitBounds(filters[0]);
             }
@@ -413,7 +456,7 @@ dc_leaflet.choroplethChart = function(parent, chartGroup) {
 
     _chart._postRender = function() {
         _geojsonLayer=L.geoJson(_chart.geojson(),{
-	    style: _chart.featureStyle(),
+            style: _chart.featureStyle(),
             onEachFeature: processFeatures
         });
         _chart.map().addLayer(_geojsonLayer);
@@ -488,8 +531,8 @@ dc_leaflet.choroplethChart = function(parent, chartGroup) {
         var v = _dataMap[_chart.featureKeyAccessor()(feature)];
         if (v && v.d) {
             layer.key=v.d.key;
-  	    if (_chart.renderPopup())
-		layer.bindPopup(_chart.popup()(v.d,feature));
+            if (_chart.renderPopup())
+                layer.bindPopup(_chart.popup()(v.d,feature));
             if (_chart.brushOn())
                 layer.on("click",selectFilter);
         }
