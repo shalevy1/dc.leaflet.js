@@ -1,7 +1,7 @@
 /*!
  *  dc.leaflet 0.2.1
  *  http://dc-js.github.io/dc.leaflet.js/
- *  Copyright 2015 Boyan Yurukov and the dc.leaflet Developers
+ *  Copyright 2014-2015 Boyan Yurukov and the dc.leaflet Developers
  *  https://github.com/dc-js/dc.leaflet.js/blob/master/AUTHORS
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
