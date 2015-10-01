@@ -17,9 +17,9 @@ dc_leaflet.leafletBase = function(_chart) {
         // appending will put in right position
         var child_div = root.selectAll('div.dc-leaflet')
                 .data([0]).enter()
-                .append('div').attr('class', 'dc-leaflet')
-                .style('width', _chart.effectiveWidth())
-                .style('height', _chart.effectiveHeight());
+              .append('div').attr('class', 'dc-leaflet')
+                .style('width', _chart.effectiveWidth() + "px")
+                .style('height', _chart.effectiveHeight() + "px");
 
         return L.map(child_div.node(),_mapOptions);
     };
