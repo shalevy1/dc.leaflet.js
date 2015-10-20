@@ -12,9 +12,7 @@
 	<link type="text/css" href="css/MarkerCluster.Default.css" rel="stylesheet"/>
 	<link type="text/css" href="css/MarkerCluster.css" rel="stylesheet"/>
 	<link type="text/css" href="css/dc.css" rel="stylesheet"/>
-
-  <!--colorbrewer for choropleth colours-->
-  <script src="js/colorbrewer.js"></script>
+	<link type="text/css" href="css/leaflet-legend.css" rel="stylesheet"/>
 
   <style>
     #holder {
@@ -33,29 +31,6 @@
       margin-left:30px;
     }
     /*map legend styling*/
-    .info {
-        padding: 6px 8px;
-        font: 14px/16px Arial, Helvetica, sans-serif;
-        background: white;
-        background: rgba(255,255,255,0.8);
-        box-shadow: 0 0 15px rgba(0,0,0,0.2);
-        border-radius: 5px;
-    }
-    .info h4 {
-        margin: 0 0 5px;
-        color: #777;
-    }
-    .legend {
-      line-height: 18px;
-      color: #555;
-    }
-    .legend i {
-        width: 18px;
-        height: 18px;
-        float: left;
-        margin-right: 8px;
-        opacity: 0.7;
-    }
     /*--*/
   </style>
 </head>
@@ -89,6 +64,7 @@
 <script type="text/javascript" src="js/dc.js"></script>
 <script type="text/javascript" src="js/leaflet.js"></script>
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/d3-tip/0.6.7/d3-tip.js"></script>
+<script src="js/colorbrewer.js"></script>
 
 <!--Optional-->
 <script type="text/javascript" src="js/leaflet.markercluster.js"></script>
@@ -220,7 +196,6 @@ var tip = d3.tip()
           .center([42.69,25.42])
           .zoom(7)
           .geojson(geojson)
-          //.colors(['#fff7f3', '#fde0dd', '#fcc5c0', '#fa9fb5', '#f768a1', '#dd3497', '#ae017e', '#7a0177', '#49006a'])
           .colors(colorbrewer.YlGnBu[7])
           .colorDomain([
               d3.min(facilitiesGroup.all(), dc.pluck('value')),
@@ -239,7 +214,8 @@ var tip = d3.tip()
           .renderlet(function(chart) {
                 chart.selectAll("path").call(tip);
                 chart.selectAll("path").on("mouseover", tip.show);
-            });
+          })
+          .legend(dc_leaflet.legend());
 
 
       var types = xf.dimension(function(d) { return d.type; });

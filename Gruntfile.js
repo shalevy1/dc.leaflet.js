@@ -205,6 +205,7 @@ module.exports = function (grunt) {
                         flatten: true,
                         src: [
                             '<%= conf.pkg.name %>.css',
+			    'leaflet-legend.css',
                             'node_modules/leaflet/dist/leaflet.css',
                             'node_modules/leaflet.markercluster/dist/MarkerCluster.Default.css',
                             'node_modules/leaflet.markercluster/dist/MarkerCluster.css',
@@ -353,6 +354,7 @@ module.exports.jsFiles = [
     'src/banner.js',   // NOTE: keep this first
     'src/core.js',
     'src/leafletBase.js',
+    'src/legend.js',
     'src/markerChart.js',
     'src/choroplethChart.js',
     'src/footer.js'  // NOTE: keep this last

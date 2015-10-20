@@ -48,14 +48,22 @@ dc_leaflet.leafletBase = function(_chart) {
         }
 
         _chart.tiles()(_map);
+	if(_chart.legend() && _chart.legend().leafletLegend())
+            _chart.legend().leafletLegend().addTo(_map);
 
         _chart._postRender();
 
         return _chart._doRedraw();
     };
 
+    _chart._doRedraw = function() {
+	if(_chart.legend())
+            _chart.legend().update();
+	return _chart;
+    };
+
     _chart._postRender = function() {
-        //abstract
+	return _chart;
     };
 
     _chart.mapOptions = function(_) {

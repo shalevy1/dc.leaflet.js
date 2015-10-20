@@ -48,14 +48,15 @@ dc_leaflet.choroplethChart = function(parent, chartGroup) {
         _chart.map().addLayer(_geojsonLayer);
     };
 
-    _chart._doRedraw = function() {
+    dc.override(_chart, '_doRedraw', function() {
         _geojsonLayer.clearLayers();
         _dataMap=[];
         _chart._computeOrderedGroups(_chart.data()).forEach(function (d, i) {
             _dataMap[_chart.keyAccessor()(d)] = {'d':d,'i':i};
         });
         _geojsonLayer.addData(_chart.geojson());
-    };
+	return _chart.__doRedraw();
+    });
 
     _chart.geojson = function(_) {
         if (!arguments.length) {
