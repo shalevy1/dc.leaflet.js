@@ -58,7 +58,7 @@ dc_leaflet.leafletBase = function(_chart) {
 
     _chart._doRedraw = function() {
 	if(_chart.legend())
-            _chart.legend().update();
+            _chart.legend().redraw();
 	return _chart;
     };
 
