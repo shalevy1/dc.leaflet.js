@@ -203,10 +203,6 @@
           .popup(function(d,feature) {
               return feature.properties.nameEn+" : "+d.value;
           })
-          .renderlet(function(chart) {
-                chart.selectAll("path").call(tip);
-                chart.selectAll("path").on("mouseover", tip.show);
-          })
           .legend(dc_leaflet.legend());
 
 
