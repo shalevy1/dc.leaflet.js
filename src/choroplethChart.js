@@ -55,7 +55,7 @@ dc_leaflet.choroplethChart = function(parent, chartGroup) {
             _dataMap[_chart.keyAccessor()(d)] = {'d':d,'i':i};
         });
         _geojsonLayer.addData(_chart.geojson());
-	return _chart.__doRedraw();
+        return _chart.__doRedraw();
     });
 
     _chart.geojson = function(_) {
