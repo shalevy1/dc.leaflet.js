@@ -203,7 +203,7 @@
           .popup(function(d,feature) {
               return feature.properties.nameEn+" : "+d.value;
           })
-          .legend(dc_leaflet.legend());
+          .legend(dc_leaflet.legend().position('bottomright'));
 
 
       var types = xf.dimension(function(d) { return d.type; });
