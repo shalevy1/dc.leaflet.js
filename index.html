@@ -12,6 +12,7 @@
 	<link type="text/css" href="css/MarkerCluster.Default.css" rel="stylesheet"/>
 	<link type="text/css" href="css/MarkerCluster.css" rel="stylesheet"/>
 	<link type="text/css" href="css/dc.css" rel="stylesheet"/>
+	<link type="text/css" href="css/leaflet-legend.css" rel="stylesheet"/>
 
   <style>
     #holder {
@@ -29,6 +30,8 @@
     .pie {
       margin-left:30px;
     }
+    /*map legend styling*/
+    /*--*/
   </style>
 </head>
 <body>
@@ -60,7 +63,7 @@
 <script type="text/javascript" src="js/crossfilter.js"></script>
 <script type="text/javascript" src="js/dc.js"></script>
 <script type="text/javascript" src="js/leaflet.js"></script>
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/d3-tip/0.6.7/d3-tip.js"></script>
+<script src="js/colorbrewer.js"></script>
 
 <!--Optional-->
 <script type="text/javascript" src="js/leaflet.markercluster.js"></script>
@@ -145,13 +148,6 @@
   var demo2_geojson=false;
   var demo2=false;
 
-var tip = d3.tip()
-.attr("class", "d3-tip")
-.html(function(d) {
-    console.log("d:", d) //returns undefined
-    return "hello";
-});
-
   d3.json("bulgaria.geojson", function(data) {
       demo2_geojson=data;
       if (demo2)
@@ -192,7 +188,7 @@ var tip = d3.tip()
           .center([42.69,25.42])
           .zoom(7)
           .geojson(geojson)
-          .colors(['#fff7f3', '#fde0dd', '#fcc5c0', '#fa9fb5', '#f768a1', '#dd3497', '#ae017e', '#7a0177', '#49006a'])
+          .colors(colorbrewer.YlGnBu[7])
           .colorDomain([
               d3.min(facilitiesGroup.all(), dc.pluck('value')),
               d3.max(facilitiesGroup.all(), dc.pluck('value'))
@@ -207,10 +203,7 @@ var tip = d3.tip()
           .popup(function(d,feature) {
               return feature.properties.nameEn+" : "+d.value;
           })
-          .renderlet(function(chart) {
-                chart.selectAll("path").call(tip);
-                chart.selectAll("path").on("mouseover", tip.show);
-            });
+          .legend(dc_leaflet.legend().position('bottomright'));
 
 
       var types = xf.dimension(function(d) { return d.type; });
