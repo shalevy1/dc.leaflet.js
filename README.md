@@ -36,7 +36,7 @@ dc_leaflet.markerChart(parent,chartGroup)
   .popup()                - function (d,marker) to return the string or DOM content of a popup
   .renderPopup(true)      - set if popups should be shown; Default: true
   .cluster(false)         - set if markers should be clustered. Requires leaflet.markercluster.js; Default: false
-  .clusterObject({..})    - options for the markerCluster object
+  .clusterOptions({..})    - options for the markerCluster object
   .rebuildMarkers(false)  - set if all markers should be rebuild each time the map is redrawn. Degrades performance; Default: false
   .brushOn(true)          - if the map would select datapoints; Default: true
   .filterByArea(false)    - if the map should filter data based on the markers inside the zoomed in area instead of the user clicking on individual markers; Default: false
