@@ -47,13 +47,13 @@ dc_leaflet.leafletBase = function(_chart) {
             if (_defaultCenter && _defaultZoom) {
                 _map.setView(_chart.toLocArray(_defaultCenter), _defaultZoom);
             }
+        
+            _chart.tiles()(_map);
+       
+            _chart._postRender();
         }
         else
             console.warn("WARNING: Leaflet map already rendered.");
-
-        _chart.tiles()(_map);
-
-        _chart._postRender();
 
         return _chart._doRedraw();
     };
