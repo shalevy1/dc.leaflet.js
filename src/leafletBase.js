@@ -39,13 +39,17 @@ dc_leaflet.leafletBase = function(_chart) {
     };
 
     _chart._doRender = function() {
-        _map = _createLeaflet(_chart.root());
-        for(var ev in _cachedHandlers)
-            _map.on(ev, _cachedHandlers[ev]);
+        if(! _chart.map()){
+            _map = _createLeaflet(_chart.root());
+            for(var ev in _cachedHandlers)
+                _map.on(ev, _cachedHandlers[ev]);
 
-        if (_defaultCenter && _defaultZoom) {
-            _map.setView(_chart.toLocArray(_defaultCenter), _defaultZoom);
+            if (_defaultCenter && _defaultZoom) {
+                _map.setView(_chart.toLocArray(_defaultCenter), _defaultZoom);
+            }
         }
+        else
+            console.warn("WARNING: Leaflet map already rendered.");
 
         _chart.tiles()(_map);
 
