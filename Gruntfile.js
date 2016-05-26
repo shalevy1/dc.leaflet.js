@@ -226,7 +226,7 @@ module.exports = function (grunt) {
                             'node_modules/dc/dc.js',
                             'node_modules/leaflet/dist/leaflet.js',
                             'node_modules/leaflet.markercluster/dist/leaflet.markercluster.js',
-                            'node_modules/crossfilter/crossfilter.js'
+                            'node_modules/crossfilter2/crossfilter.js'
                         ],
                         dest: '<%= conf.web %>/js/'
                     },
