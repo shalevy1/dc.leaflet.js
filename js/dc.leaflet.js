@@ -1,5 +1,5 @@
 /*!
- *  dc.leaflet 0.2.2
+ *  dc.leaflet 0.2.3
  *  http://dc-js.github.io/dc.leaflet.js/
  *  Copyright 2014-2015 Boyan Yurukov and the dc.leaflet Developers
  *  https://github.com/dc-js/dc.leaflet.js/blob/master/AUTHORS
@@ -20,7 +20,7 @@
 'use strict';
 
 var dc_leaflet = {
-    version: '0.2.2'
+    version: '0.2.3'
 };
 
 dc_leaflet.leafletBase = function(_chart) {
@@ -50,8 +50,8 @@ dc_leaflet.leafletBase = function(_chart) {
     };
 
     var _tiles=function(map) {
-        L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         }).addTo(map);
     };
 
@@ -64,17 +64,20 @@ dc_leaflet.leafletBase = function(_chart) {
     };
 
     _chart._doRender = function() {
-        _map = _createLeaflet(_chart.root());
-        for(var ev in _cachedHandlers)
-            _map.on(ev, _cachedHandlers[ev]);
+        if(! _chart.map()){
+            _map = _createLeaflet(_chart.root());
+            for(var ev in _cachedHandlers)
+                _map.on(ev, _cachedHandlers[ev]);
 
-        if (_defaultCenter && _defaultZoom) {
-            _map.setView(_chart.toLocArray(_defaultCenter), _defaultZoom);
+            if (_defaultCenter && _defaultZoom) {
+                _map.setView(_chart.toLocArray(_defaultCenter), _defaultZoom);
+            }
+
+            _chart.tiles()(_map);
+            _chart._postRender();
         }
-
-        _chart.tiles()(_map);
-
-        _chart._postRender();
+        else
+            console.warn("WARNING: Leaflet map already rendered.");
 
         return _chart._doRedraw();
     };
@@ -214,8 +217,9 @@ dc_leaflet.legend = function() {
         // unfortunately the dc.js legend has no concept of redraw, it's always render
         if(!_leafletLegend) {
             // fetch the legend class creator, invoke it
+            var Legend = _legend.LegendClass()();
             // and constuct that class
-            _leafletLegend = new (_legend.LegendClass()())();
+            _leafletLegend = new Legend();
             _leafletLegend.addTo(_parent.map());
         }
 
