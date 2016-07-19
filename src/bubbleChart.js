@@ -6,7 +6,6 @@ dc_leaflet.bubbleChart = function (parent, chartGroup) {
      * ####################################
      */
     var _chart = dc_leaflet.leafletBase({});
-    var _selectedMarkerList = [];
     var _selectedColor = 'blue';
     var _unselectedColor = 'gray';
     var _layerGroup = false;
@@ -31,7 +30,7 @@ dc_leaflet.bubbleChart = function (parent, chartGroup) {
             console.log(_chart.title()(d));
         });
         var key = _chart.keyAccessor()(d);
-        var isSelected = (-1 !== _selectedMarkerList.indexOf(key));
+        var isSelected = (-1 !== _chart.filters().indexOf(key));
 
         circle.options.color = isSelected ? _chart.selectedColor() : _chart.unselectedColor();
 
@@ -42,24 +41,6 @@ dc_leaflet.bubbleChart = function (parent, chartGroup) {
      * Private helper functions
      * ########################
      */
-
-    function clearSelectedMarkerList() {
-        _selectedMarkerList = [];
-    }
-
-    function isSelected(d) {
-        return _selectedMarkerList.indexOf(d) !== -1;
-    }
-
-    function toggleSelectedItem(d) {
-        var i = _selectedMarkerList.indexOf(d);
-        if (i === -1) {
-            _selectedMarkerList.push(d);
-        }
-        else {
-            _selectedMarkerList.splice(i, 1);
-        }
-    }
 
     /* ################
      * Public interface
@@ -137,21 +118,12 @@ dc_leaflet.bubbleChart = function (parent, chartGroup) {
     };
 
     /* Render and redraw overrides */
-    _chart.filterAll = function () {
-        // Clear selectedMarkerList on a call to filterAll.
-        clearSelectedMarkerList();
-        return _chart.filter(null);
-    };
-
     _chart._postRender = function () {
         if (_chart.brushOn()) {
 
             _chart.map().on('click', function (e) {
-                clearSelectedMarkerList();
-                dc.events.trigger(function () {
-                    _chart.filter(null);
-                    dc.redrawAll(_chart.chartGroup());
-                });
+                _chart.filter(null);
+                _chart.redrawGroup();
             });
         }
         _chart.map().on('boxzoomend', boxzoomFilter, this);
@@ -175,18 +147,18 @@ dc_leaflet.bubbleChart = function (parent, chartGroup) {
 
     /* Callback functions */
     function boxzoomFilter(e) {
-        clearSelectedMarkerList();
+        var filters = [];
 
         _layerGroup.eachLayer(function (layer) {
             var latLng = layer.getLatLng();
             if (e.boxZoomBounds.contains(latLng)) {
-                _selectedMarkerList.push(layer.key);
+                filters.push(layer.key);
             }
         });
 
         dc.events.trigger(function (e) {
-            _chart.dimension().filterFunction(isSelected);
-            dc.redrawAll();
+            _chart.replaceFilter([filters]);
+            _chart.redrawGroup();
         });
     }
 
@@ -194,7 +166,7 @@ dc_leaflet.bubbleChart = function (parent, chartGroup) {
         if (!e.target) {
             dc.events.trigger(function () {
                 _chart.filter(null);
-                dc.redrawAll(_chart.chartGroup());
+                _chart.redrawGroup();
             });
             return;
         }
@@ -202,21 +174,13 @@ dc_leaflet.bubbleChart = function (parent, chartGroup) {
 
         if (e.originalEvent.ctrlKey || e.originalEvent.metaKey) {
             // If ctrl/cmd key modifier was pressed on click, toggle the target
-            toggleSelectedItem(filter);
+            _chart.filter(filter);
         }
         else {
             // If ctrl key wasn't pressed, clear selection and add target
-            clearSelectedMarkerList();
-            _selectedMarkerList.push(filter);
+            _chart.replaceFilter([[filter]]);
         }
-        dc.events.trigger(function () {
-            if (_selectedMarkerList.length > 0) {
-                _chart.dimension().filterFunction(isSelected);
-            } else {
-                _chart.filter(null);
-            }
-            dc.redrawAll(_chart.chartGroup());
-        });
+        _chart.redrawGroup();
     };
 
 
