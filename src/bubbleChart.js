@@ -44,8 +44,20 @@ dc_leaflet.bubbleChart = function (parent, chartGroup) {
      */
 
     function clearSelectedMarkerList() {
-        while (_selectedMarkerList.length > 0) {
-            _selectedMarkerList.pop();
+        _selectedMarkerList = [];
+    }
+
+    function isSelected(d) {
+        return _selectedMarkerList.indexOf(d) !== -1;
+    }
+
+    function toggleSelectedItem(d) {
+        var i = _selectedMarkerList.indexOf(d);
+        if (i === -1) {
+            _selectedMarkerList.push(d);
+        }
+        else {
+            _selectedMarkerList.splice(i, 1);
         }
     }
 
@@ -135,9 +147,7 @@ dc_leaflet.bubbleChart = function (parent, chartGroup) {
         if (_chart.brushOn()) {
 
             _chart.map().on('click', function (e) {
-                while (_selectedMarkerList.length > 0) {
-                    _selectedMarkerList.pop();
-                }
+                clearSelectedMarkerList();
                 dc.events.trigger(function () {
                     _chart.filter(null);
                     dc.redrawAll(_chart.chartGroup());
@@ -175,9 +185,7 @@ dc_leaflet.bubbleChart = function (parent, chartGroup) {
         });
 
         dc.events.trigger(function (e) {
-            _chart.dimension().filterFunction(function (d) {
-                return _selectedMarkerList.indexOf(d) !== -1;
-            });
+            _chart.dimension().filterFunction(isSelected);
             dc.redrawAll();
         });
     }
@@ -192,30 +200,18 @@ dc_leaflet.bubbleChart = function (parent, chartGroup) {
         }
         var filter = e.target.key;
 
-        if (e.originalEvent.ctrlKey) {
-            // If ctrl key modifier was pressed on click.
-            var selectedIndex = _selectedMarkerList.indexOf(filter);
-            if (selectedIndex === -1) {
-                // If target not already in selected marker list, add it.
-                _selectedMarkerList.push(filter);
-            }
-            else {
-                // Else, remove it.
-                _selectedMarkerList.splice(selectedIndex, 1);
-            }
+        if (e.originalEvent.ctrlKey || e.originalEvent.metaKey) {
+            // If ctrl/cmd key modifier was pressed on click, toggle the target
+            toggleSelectedItem(filter);
         }
         else {
-            // If ctrl key wasn't pressed, clear filter and selection and add target to a empty selectedMarkersList.
-            while (_selectedMarkerList.length > 0) {
-                _selectedMarkerList.pop();
-            }
+            // If ctrl key wasn't pressed, clear selection and add target
+            clearSelectedMarkerList();
             _selectedMarkerList.push(filter);
         }
         dc.events.trigger(function () {
             if (_selectedMarkerList.length > 0) {
-                _chart.dimension().filterFunction(function (d) {
-                    return _selectedMarkerList.indexOf(d) !== -1;
-                });
+                _chart.dimension().filterFunction(isSelected);
             } else {
                 _chart.filter(null);
             }
