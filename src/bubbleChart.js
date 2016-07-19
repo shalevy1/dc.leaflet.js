@@ -19,8 +19,8 @@ dc_leaflet.bubbleChart = function (parent, chartGroup) {
     var _brushOn = true;
 
     var _marker = function (d, map) {
-        var key = _chart.locationAccessor()(d);
-        var locArray = _chart.toLocArray(key);
+        var loc = _chart.locationAccessor()(d);
+        var locArray = _chart.toLocArray(loc);
 
         var latlng = L.latLng(+locArray[0], +locArray[1]);
         var circle = L.circleMarker(latlng);
@@ -30,6 +30,7 @@ dc_leaflet.bubbleChart = function (parent, chartGroup) {
             // TODO - Tooltips!
             console.log(_chart.title()(d));
         });
+        var key = _chart.keyAccessor()(d);
         var isSelected = (-1 !== _selectedMarkerList.indexOf(key));
 
         circle.options.color = isSelected ? _chart.selectedColor() : _chart.unselectedColor();
