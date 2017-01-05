@@ -236,7 +236,7 @@ module.exports = function (grunt) {
                         src: [
                             'node_modules/leaflet/dist/images/*'
                         ],
-                        dest: '<%= conf.web %>/js/images'
+                        dest: '<%= conf.web %>/css/images'
                     },
                 ]
             }
