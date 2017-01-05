@@ -25,8 +25,8 @@ dc_leaflet.leafletBase = function(_chart) {
     };
 
     var _tiles=function(map) {
-        L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         }).addTo(map);
     };
 
@@ -39,17 +39,20 @@ dc_leaflet.leafletBase = function(_chart) {
     };
 
     _chart._doRender = function() {
-        _map = _createLeaflet(_chart.root());
-        for(var ev in _cachedHandlers)
-            _map.on(ev, _cachedHandlers[ev]);
+        if(! _chart.map()){
+            _map = _createLeaflet(_chart.root());
+            for(var ev in _cachedHandlers)
+                _map.on(ev, _cachedHandlers[ev]);
 
-        if (_defaultCenter && _defaultZoom) {
-            _map.setView(_chart.toLocArray(_defaultCenter), _defaultZoom);
+            if (_defaultCenter && _defaultZoom) {
+                _map.setView(_chart.toLocArray(_defaultCenter), _defaultZoom);
+            }
+
+            _chart.tiles()(_map);
+            _chart._postRender();
         }
-
-        _chart.tiles()(_map);
-
-        _chart._postRender();
+        else
+            console.warn("WARNING: Leaflet map already rendered.");
 
         return _chart._doRedraw();
     };
