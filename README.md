@@ -57,8 +57,8 @@ Each group is mapped to an feature on the map. Includes all properties from `lea
 dc_leaflet.choroplethChart(parent, chartGroup)
   .geojson()              - get or set geojson object describing the features
   .featureOptions()       - object or a function(feature) to set the options for each feature
-  .featureKeyAccessor()   - function(feature) to return a feature property that would be compared to the group key; Defauft: feature.properties.key
-  .featureStyle()         - get or set the function(feature) to return style options for L.geoJson
+  .featureKeyAccessor()   - function(feature) to return a feature property that would be compared to the group key; Default: feature.properties.key
+  .featureStyle()         - get or set the function(feature) to return style options for L.geoJson. Probably not helpful to override this, but it's possible. Default: use featureOptions, data, color, selection status to define the style; see source for details.
   .popup()                - function(d, feature) to return the string or DOM content of a popup
   .renderPopup(true)      - get or set if popups should be shown; Default: true
 ```
@@ -68,9 +68,9 @@ Bubble chart
 Each group is mapped to a circle on the map. Includes all properties from `leafletBase`, and:
 ```js
 dc_leaflet.bubbleChart(parent, chartGroup)
-  .r()                    - radius scale, used to convert value returned by valueAccessor(d) to pixels. Default: d3.scale.linear().domain([0, 100]
+  .r()                    - radius scale, used to convert value returned by valueAccessor(d) to pixels. Default: d3.scale.linear().domain([0, 100])
   .locationAccessor()     - function(d) to access the property indicating the latlng (string or array); Default: use keyAccessor
-  .selectedColor()        - get or set the selected bubble color
-  .unselectedColor()      - get or set the unselected bubble color
-  .marker()               - get or set function(d, map) to build the marker object. (Probably not helpful to override this, but its's possible.) Default: create L.circleMarker based on the other parameters, see source for details
+  .selectedColor()        - get or set the (constant) selected bubble color
+  .unselectedColor()      - get or set the (constant) unselected bubble color
+  .marker()               - get or set function(d, map) to build the marker object. Probably not helpful to override this, but its's possible. Default: create L.circleMarker based on the other parameters; see source for details.
 ```

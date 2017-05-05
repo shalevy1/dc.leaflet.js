@@ -25,7 +25,7 @@ dc_leaflet.markerChart = function(parent, chartGroup) {
         var marker = new L.Marker(_chart.toLocArray(_chart.locationAccessor()(d)), {
             title: _chart.renderTitle() ? _chart.title()(d) : '',
             alt: _chart.renderTitle() ? _chart.title()(d) : '',
-            icon: _icon(),
+            icon: _icon(d, map),
             clickable: _chart.renderPopup() || (_chart.brushOn() && !_filterByArea),
             draggable: false
         });
@@ -184,7 +184,7 @@ dc_leaflet.markerChart = function(parent, chartGroup) {
     };
 
     var createmarker = function(v, k) {
-        var marker = _marker(v);
+        var marker = _marker(v, _chart.map());
         marker.key = k;
         if (_chart.renderPopup()) {
             marker.bindPopup(_chart.popup()(v, marker));

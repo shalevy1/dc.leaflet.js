@@ -100,7 +100,7 @@ dc_leaflet.bubbleChart = function (parent, chartGroup) {
     };
 
     var createmarker = function (v, k) {
-        var marker = _chart.marker()(v);
+        var marker = _chart.marker()(v, _chart.map());
         marker.key = k;
         if (_chart.brushOn()) {
             marker.on("click", selectFilter);
