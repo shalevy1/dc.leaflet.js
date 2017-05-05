@@ -77,7 +77,6 @@ dc_leaflet.bubbleChart = function (parent, chartGroup) {
     /**
      #### .selectedColor([color])
      Get or set the color of a selected (filter) bubble.
-
      */
     _chart.selectedColor = function (_) {
         if (!arguments.length) {
