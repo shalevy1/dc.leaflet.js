@@ -77,7 +77,6 @@ dc_leaflet.bubbleChart = function (parent, chartGroup) {
     /**
      #### .selectedColor([color])
      Get or set the color of a selected (filter) bubble.
-
      */
     _chart.selectedColor = function (_) {
         if (!arguments.length) {
@@ -101,7 +100,7 @@ dc_leaflet.bubbleChart = function (parent, chartGroup) {
     };
 
     var createmarker = function (v, k) {
-        var marker = _chart.marker()(v);
+        var marker = _chart.marker()(v, _chart.map());
         marker.key = k;
         if (_chart.brushOn()) {
             marker.on("click", selectFilter);
