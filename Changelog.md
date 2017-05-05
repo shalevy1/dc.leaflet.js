@@ -1,5 +1,7 @@
-## 0.3.2
+## 0.3.3
  * Include `index.js` for ES6 module support, by Sunny Doshi ([#31](https://github.com/dc-js/dc.leaflet.js/pull/31) / [#28](https://github.com/dc-js/dc.leaflet.js/issues/28))
+
+## 0.3.2
  * Pass `.marker()` and `.icon` arguments consistent with documentation. Thanks DienNM! ([#30](https://github.com/dc-js/dc.leaflet.js/issues/30))
  * Documentation improvements: bubble chart is now documented, shared functions are documented under `leafletBase`, minor tweaks.
 
