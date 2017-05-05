@@ -30,7 +30,7 @@ dc_leaflet.leafletBase = function(chart)
   .center([1.1,1.1])      - get or set initial location
   .zoom(7)                - get or set initial zoom level
   .map()                  - get map object
-  .brushOn(true)          - if the map would select datapoints; Default: true
+  .brushOn(true)          - if the map should select datapoints; Default: true
 ```
 
 Marker chart
@@ -39,11 +39,11 @@ Each group is presented as one marker on the map. Includes all properties from `
 ```js
 dc_leaflet.markerChart(parent, chartGroup)
   .locationAccessor()     - function (d) to access the property indicating the latlng (string or array); Default: use keyAccessor
-  .marker()               - set function (d,map) to build the marker object. Default: standard Leaflet marker is built
-  .icon()                 - function (d,map) to build an icon object. Default: L.Icon.Default
-  .popup()                - function (d,marker) to return the string or DOM content of a popup
-  .renderPopup(true)      - set if popups should be shown; Default: true
-  .cluster(false)         - set if markers should be clustered. Requires leaflet.markercluster.js; Default: false
+  .marker()               - set function(d, map) to build the marker object. Default: standard Leaflet marker is built
+  .icon()                 - function(d, map) to build an icon object. Default: L.Icon.Default
+  .popup()                - function(d, marker) to return the string or DOM content of a popup
+  .renderPopup(true)      - get or set if popups should be shown; Default: true
+  .cluster(false)         - get or set if markers should be clustered. Requires leaflet.markercluster.js; Default: false
   .clusterOptions({..})   - options for the markerCluster object
   .rebuildMarkers(false)  - set if all markers should be rebuild each time the map is redrawn. Degrades performance; Default: false
   .filterByArea(false)    - if the map should filter data based on the markers inside the zoomed in area instead of the user clicking on individual markers; Default: false
@@ -55,12 +55,12 @@ Choropleth chart
 Each group is mapped to an feature on the map. Includes all properties from `leafletBase`, and:
 ```js
 dc_leaflet.choroplethChart(parent, chartGroup)
-  .geojson()              - geojson object describing the features
-  .featureOptions()       - object or a function (feature) to set the options for each feature
-  .featureKeyAccessor()   - function (feature) to return a feature property that would be compared to the group key; Defauft: feature.properties.key
-  .popup()                - function (d,feature) to return the string or DOM content of a popup
-  .renderPopup(true)      - set if popups should be shown; Default: true
-  .brushOn(true)          - if the map would select datapoints; Default: true
+  .geojson()              - get or set geojson object describing the features
+  .featureOptions()       - object or a function(feature) to set the options for each feature
+  .featureKeyAccessor()   - function(feature) to return a feature property that would be compared to the group key; Defauft: feature.properties.key
+  .featureStyle()         - get or set the function(feature) to return style options for L.geoJson
+  .popup()                - function(d, feature) to return the string or DOM content of a popup
+  .renderPopup(true)      - get or set if popups should be shown; Default: true
 ```
 
 Bubble chart
@@ -69,7 +69,8 @@ Each group is mapped to a circle on the map. Includes all properties from `leafl
 ```js
 dc_leaflet.bubbleChart(parent, chartGroup)
   .r()                    - radius scale, used to convert value returned by valueAccessor(d) to pixels. Default: d3.scale.linear().domain([0, 100]
-  .locationAccessor()     - function (d) to access the property indicating the latlng (string or array); Default: use keyAccessor
+  .locationAccessor()     - function(d) to access the property indicating the latlng (string or array); Default: use keyAccessor
   .selectedColor()        - get or set the selected bubble color
   .unselectedColor()      - get or set the unselected bubble color
+  .marker()               - get or set function(d, map) to build the marker object. (Probably not helpful to override this, but its's possible.) Default: create L.circleMarker based on the other parameters, see source for details
 ```

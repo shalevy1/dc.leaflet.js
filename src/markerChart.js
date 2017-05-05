@@ -21,8 +21,8 @@ dc_leaflet.markerChart = function(parent, chartGroup) {
         return _chart.keyAccessor()(d);
     };
 
-    var _marker = function(d,map) {
-        var marker = new L.Marker(_chart.toLocArray(_chart.locationAccessor()(d)),{
+    var _marker = function(d, map) {
+        var marker = new L.Marker(_chart.toLocArray(_chart.locationAccessor()(d)), {
             title: _chart.renderTitle() ? _chart.title()(d) : '',
             alt: _chart.renderTitle() ? _chart.title()(d) : '',
             icon: _icon(),
@@ -32,11 +32,11 @@ dc_leaflet.markerChart = function(parent, chartGroup) {
         return marker;
     };
 
-    var _icon = function(d,map) {
+    var _icon = function(d, map) {
         return new L.Icon.Default();
     };
 
-    var _popup = function(d,marker) {
+    var _popup = function(d, marker) {
         return _chart.title()(d);
     };
 
@@ -76,14 +76,14 @@ dc_leaflet.markerChart = function(parent, chartGroup) {
         _layerGroup.clearLayers();
 
         var addList=[];
-        groups.forEach(function(v,i) {
+        groups.forEach(function(v, i) {
             var key = _chart.keyAccessor()(v);
             var marker = null;
             if (!_rebuildMarkers && key in _markerList) {
                 marker = _markerList[key];
             }
             else {
-                marker = createmarker(v,key);
+                marker = createmarker(v, key);
             }
             if (!_chart.cluster()) {
                 _layerGroup.addLayer(marker);
@@ -183,14 +183,14 @@ dc_leaflet.markerChart = function(parent, chartGroup) {
         return _layerGroup;
     };
 
-    var createmarker = function(v,k) {
+    var createmarker = function(v, k) {
         var marker = _marker(v);
         marker.key = k;
         if (_chart.renderPopup()) {
-            marker.bindPopup(_chart.popup()(v,marker));
+            marker.bindPopup(_chart.popup()(v, marker));
         }
         if (_chart.brushOn() && !_filterByArea) {
-            marker.on("click",selectFilter);
+            marker.on("click", selectFilter);
         }
         _markerList[k]=marker;
         return marker;
