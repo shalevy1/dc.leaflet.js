@@ -118,10 +118,11 @@ module.exports = function (grunt) {
                     {
                         expand: true,
                         flatten: true,
+                        nonull: true,
                         src: [
-                            '<%= conf.pkg.name %>.css',
 			    'leaflet-legend.css',
                             'node_modules/leaflet/dist/leaflet.css',
+                            'node_modules/leaflet.locationfilter/src/locationfilter.css',
                             'node_modules/leaflet.markercluster/dist/MarkerCluster.Default.css',
                             'node_modules/leaflet.markercluster/dist/MarkerCluster.css',
                             'node_modules/dc/dc.css'
@@ -131,6 +132,7 @@ module.exports = function (grunt) {
                     {
                         expand: true,
                         flatten: true,
+                        nonull: true,
                         src: [
                             '<%= conf.pkg.name %>.js',
                             '<%= conf.pkg.name %>.js.map',
@@ -140,6 +142,8 @@ module.exports = function (grunt) {
                             'node_modules/d3/d3.js',
                             'node_modules/dc/dc.js',
                             'node_modules/leaflet/dist/leaflet.js',
+                            'node_modules/leaflet/dist/leaflet-src.js',
+                            'node_modules/leaflet.locationfilter/src/locationfilter.js',
                             'node_modules/leaflet.markercluster/dist/leaflet.markercluster.js',
                             'node_modules/crossfilter2/crossfilter.js'
                         ],
@@ -148,8 +152,10 @@ module.exports = function (grunt) {
                     {
                         expand: true,
                         flatten: true,
+                        nonull: true,
                         src: [
-                            'node_modules/leaflet/dist/images/*'
+                            'node_modules/leaflet/dist/images/*',
+                            'node_modules/leaflet.locationfilter/src/img/*'
                         ],
                         dest: '<%= conf.web %>/css/images'
                     },
@@ -260,6 +266,7 @@ module.exports.jsFiles = [
     'src/core.js',
     'src/leafletBase.js',
     'src/legend.js',
+    'src/rectangularSelection.js',
     'src/markerChart.js',
     'src/choroplethChart.js',
     'src/bubbleChart.js',

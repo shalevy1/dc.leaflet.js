@@ -9,6 +9,7 @@ dc_leaflet.bubbleChart = function (parent, chartGroup) {
     var _selectedColor = 'blue';
     var _unselectedColor = 'gray';
     var _layerGroup = false;
+    var _selection = null;
 
     var _location = function (d) {
         return _chart.keyAccessor()(d);
@@ -116,6 +117,14 @@ dc_leaflet.bubbleChart = function (parent, chartGroup) {
         return _chart;
     };
 
+    _chart.selection = function (selection) {
+        if(arguments.length === 0)
+            return _selection;
+
+        _selection = selection;
+        return this;
+    };
+
     /* Render and redraw overrides */
     _chart._postRender = function () {
         if (_chart.brushOn()) {
@@ -128,6 +137,11 @@ dc_leaflet.bubbleChart = function (parent, chartGroup) {
         _chart.map().on('boxzoomend', boxzoomFilter, this);
         _layerGroup = new L.LayerGroup();
         _chart.map().addLayer(_layerGroup);
+        if(_selection) {
+            _selection
+                .parent(_chart)
+                .render();
+        }
     };
 
     _chart._doRedraw = function () {
@@ -181,7 +195,6 @@ dc_leaflet.bubbleChart = function (parent, chartGroup) {
         }
         _chart.redrawGroup();
     };
-
 
     return _chart.anchor(parent, chartGroup);
 };

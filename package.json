@@ -1,6 +1,6 @@
 {
     "name": "dc.leaflet",
-    "version": "0.3.3",
+    "version": "0.3.4",
     "license": "Apache-2.0",
     "copyright": "2015",
     "description": "Leaflet maps integrated with crossfilter and dc.js",
@@ -27,6 +27,7 @@
         "dc": "~2.0.0",
         "leaflet": "~1.0.2",
         "leaflet.markercluster": "~1.0.0",
+        "leaflet.locationfilter": "~0.1",
         "d3": "3.x"
     },
     "devDependencies": {
