@@ -14,7 +14,7 @@ dc_leaflet.bubbleChart = function (parent, chartGroup) {
         return _chart.keyAccessor()(d);
     };
 
-    var _r = d3.scale.linear().domain([0, 100]);
+    var _r = d3.scaleLinear().domain([0, 100]);
     var _brushOn = true;
 
     var _marker = function (d, map) {
@@ -50,7 +50,7 @@ dc_leaflet.bubbleChart = function (parent, chartGroup) {
 
     /**
      #### .r([bubbleRadiusScale])
-     Get or set bubble radius scale. By default bubble chart uses ```d3.scale.linear().domain([0, 100])``` as its r scale .
+     Get or set bubble radius scale. By default bubble chart uses ```d3.scaleLinear().domain([0, 100])``` as its r scale .
 
      **/
     _chart.r = function (_) {
