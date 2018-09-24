@@ -27,7 +27,7 @@ dc_leaflet.bubbleChart = function (parent, chartGroup) {
         circle.setRadius(_chart.r()(_chart.valueAccessor()(d)));
         circle.on("mouseover", function (e) {
             // TODO - Tooltips!
-            console.log(_chart.title()(d));
+            //console.log(_chart.title()(d));
         });
         var key = _chart.keyAccessor()(d);
         var isSelected = (-1 !== _chart.filters().indexOf(key));
