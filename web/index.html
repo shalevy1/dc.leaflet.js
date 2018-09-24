@@ -84,7 +84,7 @@
 
   /*     Markers      */
 
-  d3.tsv("demo1.tsv", function(data) {
+  d3.tsv("demo1.tsv").then(function(data) {
       drawMarkerSelect(data);
       drawMarkerArea(data);
   });
@@ -156,18 +156,9 @@
       return {marker: marker, pie: pie};
   }
 
-  var demo2_geojson=false;
-  var demo2=false;
-
-  d3.json("bulgaria.geojson", function(data) {
-      demo2_geojson=data;
-      if (demo2)
-          drawChoropleth(demo2,demo2_geojson);
-  });
-  d3.csv("demo2.csv", function(data) {
-      demo2=data;
-      if (demo2_geojson)
-          drawChoropleth(demo2,demo2_geojson);
+  Promise.all([d3.json("bulgaria.geojson"), d3.csv("demo2.csv")])
+    .then(function([demo2_geojson, demo2]) {
+        drawChoropleth(demo2,demo2_geojson);
   });
 
   /*     Choropleth      */

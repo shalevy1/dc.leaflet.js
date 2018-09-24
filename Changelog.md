@@ -1,3 +1,6 @@
+## 0.4.0
+ * Compatible with D3v5 and dc.js 3.*
+
 ## 0.3.3
  * Include `index.js` for ES6 module support, by Sunny Doshi ([#31](https://github.com/dc-js/dc.leaflet.js/pull/31) / [#28](https://github.com/dc-js/dc.leaflet.js/issues/28))
 
