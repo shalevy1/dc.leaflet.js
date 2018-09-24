@@ -137,7 +137,6 @@ module.exports = function (grunt) {
                             '<%= conf.pkg.name %>.js.map',
                             '<%= conf.pkg.name %>.min.js',
                             '<%= conf.pkg.name %>.min.js.map',
-                            'node_modules/jquery/dist/jquery.js',
                             'node_modules/d3/dist/d3.js',
                             'node_modules/dc/dc.js',
                             'node_modules/leaflet/dist/leaflet.js',
