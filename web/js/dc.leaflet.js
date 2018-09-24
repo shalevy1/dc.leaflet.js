@@ -1,5 +1,5 @@
 /*!
- *  dc.leaflet 0.3.3
+ *  dc.leaflet 0.4.0
  *  http://dc-js.github.io/dc.leaflet.js/
  *  Copyright 2014-2015 Boyan Yurukov and the dc.leaflet Developers
  *  https://github.com/dc-js/dc.leaflet.js/blob/master/AUTHORS
@@ -20,7 +20,7 @@
 'use strict';
 
 var dc_leaflet = {
-    version: '0.3.3'
+    version: '0.4.0'
 };
 
 dc_leaflet.leafletBase = function(_chart) {
@@ -40,12 +40,12 @@ dc_leaflet.leafletBase = function(_chart) {
         // append sub-div if not there, to allow client to put stuff (reset link etc.)
         // in main div. might also use relative positioning here, for now assume
         // appending will put in right position
-        var child_div = root.selectAll('div.dc-leaflet')
-                .data([0]).enter()
-              .append('div').attr('class', 'dc-leaflet')
-                .style('width', _chart.effectiveWidth() + "px")
-                .style('height', _chart.effectiveHeight() + "px");
-
+        var child_div = root.selectAll('div.dc-leaflet');
+        child_div = child_div.data([0]).enter()
+            .append('div').attr('class', 'dc-leaflet')
+            .style('width', _chart.effectiveWidth() + "px")
+            .style('height', _chart.effectiveHeight() + "px")
+            .merge(child_div);
         return L.map(child_div.node(),_mapOptions);
     };
 
@@ -176,7 +176,9 @@ dc_leaflet.legend = function() {
                 return this._div;
             },
             _update: function () {
-                if (_parent.colorDomain()) { // check because undefined for marker charts
+                if (!_parent.colorDomain)
+                    console.warn('legend not supported for this dc.leaflet chart type, ignoring');
+                else {
                     var minValue = _parent.colorDomain()[0],
                         maxValue = _parent.colorDomain()[1],
                         palette = _parent.colors().range(),
@@ -667,7 +669,7 @@ dc_leaflet.bubbleChart = function (parent, chartGroup) {
         return _chart.keyAccessor()(d);
     };
 
-    var _r = d3.scale.linear().domain([0, 100]);
+    var _r = d3.scaleLinear().domain([0, 100]);
     var _brushOn = true;
 
     var _marker = function (d, map) {
@@ -680,7 +682,7 @@ dc_leaflet.bubbleChart = function (parent, chartGroup) {
         circle.setRadius(_chart.r()(_chart.valueAccessor()(d)));
         circle.on("mouseover", function (e) {
             // TODO - Tooltips!
-            console.log(_chart.title()(d));
+            //console.log(_chart.title()(d));
         });
         var key = _chart.keyAccessor()(d);
         var isSelected = (-1 !== _chart.filters().indexOf(key));
@@ -703,7 +705,7 @@ dc_leaflet.bubbleChart = function (parent, chartGroup) {
 
     /**
      #### .r([bubbleRadiusScale])
-     Get or set bubble radius scale. By default bubble chart uses ```d3.scale.linear().domain([0, 100])``` as its r scale .
+     Get or set bubble radius scale. By default bubble chart uses ```d3.scaleLinear().domain([0, 100])``` as its r scale .
 
      **/
     _chart.r = function (_) {
@@ -815,15 +817,8 @@ dc_leaflet.bubbleChart = function (parent, chartGroup) {
     }
 
     var selectFilter = function (e) {
-        if (!e.target) {
-            dc.events.trigger(function () {
-                _chart.filter(null);
-                _chart.redrawGroup();
-            });
-            return;
-        }
+        L.DomEvent.stopPropagation(e);
         var filter = e.target.key;
-
         if (e.originalEvent.ctrlKey || e.originalEvent.metaKey) {
             // If ctrl/cmd key modifier was pressed on click, toggle the target
             _chart.filter(filter);
