@@ -162,15 +162,8 @@ dc_leaflet.bubbleChart = function (parent, chartGroup) {
     }
 
     var selectFilter = function (e) {
-        if (!e.target) {
-            dc.events.trigger(function () {
-                _chart.filter(null);
-                _chart.redrawGroup();
-            });
-            return;
-        }
+        L.DomEvent.stopPropagation(e);
         var filter = e.target.key;
-
         if (e.originalEvent.ctrlKey || e.originalEvent.metaKey) {
             // If ctrl/cmd key modifier was pressed on click, toggle the target
             _chart.filter(filter);
