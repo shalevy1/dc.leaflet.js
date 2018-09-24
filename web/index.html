@@ -62,6 +62,13 @@
     <div class="map"></div>
     <div class="pie"></div>
   </div>
+
+  <div id="demo4">
+    <h2>Bubble chart</h2>
+    <i>Population by age groups in Bulgaria in 2011</i>
+    <div class="map"></div>
+    <div class="pie"></div>
+  </div>
 </div>
 
 <div id="octocat">
@@ -159,6 +166,7 @@
   Promise.all([d3.json("bulgaria.geojson"), d3.csv("demo2.csv")])
     .then(function([demo2_geojson, demo2]) {
         drawChoropleth(demo2,demo2_geojson);
+        drawBubbles(demo2,demo2_geojson);
   });
 
   /*     Choropleth      */
@@ -212,6 +220,72 @@
       var typesGroup = types.group().reduceSum(function(d) { return d.value;});
 
       var pie = dc.pieChart("#demo3 .pie",groupname)
+          .dimension(types)
+          .group(typesGroup)
+          .width(200)
+          .height(200)
+          .ordering(function (p) {
+              return +p.key.substr(6);
+          })
+          .renderLabel(false)
+          .renderTitle(true)
+          .title(function(d) {
+              var age = d.key.substr(6);
+              if (age.indexOf("p")==-1)
+                  age="Between "+(+age-4)+"-"+age;
+              else
+                  age="Over "+age.substr(0,2);
+              return age+" : "+d.value;
+          });
+
+      dc.renderAll(groupname);
+      return {choro: choro, pie: pie};
+  }
+  /*     Bubble Chart      */
+
+  function drawBubbles(data, geojson) {
+      // extract centroids from geojson shapes
+      dataP = [];
+      var pos = {}, max = 0;
+      data.forEach(function(d) {
+          var geo = geojson.features.find(f => f.properties.code === d.code);
+          var points = geo.geometry.coordinates[0];
+          if(Array.isArray(points[0][0]))
+              points = geo.geometry.coordinates.reduce(function(p, v) {
+                  return p.concat(v);
+              }, []);
+          var p = [d3.sum(points, p => +p[1])/points.length, d3.sum(points, p => +p[0])/points.length];
+          pos[d.code] = p;
+          d.sum = 0;
+          for(var p in d)
+              if (p && p!="code" && p!="sum") {
+                  dataP.push({'code':d.code,'type':p,'value':+d[p]});
+                  d.sum+=+d[p];
+              }
+          if(d.sum > max)
+              max = d.sum;
+      });
+      delete data;
+
+      var xf = crossfilter(dataP);
+      var groupname = "Bubbles";
+      var facilities = xf.dimension(function(d) { return d.code; });
+      var facilitiesGroup = facilities.group().reduceSum(function(d) { return d.value;});
+
+      var choro = dc_leaflet.bubbleChart("#demo4 .map",groupname)
+          .dimension(facilities)
+          .group(facilitiesGroup)
+          .width(600)
+          .height(400)
+          .center([42.69,25.42])
+          .zoom(7)
+          .locationAccessor(d => pos[d.key])
+          .r(d3.scaleLog().domain([1, max]).range([0,20]));
+
+      var types = xf.dimension(function(d) { return d.type; });
+      var typesGroup = types.group().reduceSum(function(d) { return d.value;});
+
+      var pie = dc.pieChart("#demo4 .pie",groupname)
           .dimension(types)
           .group(typesGroup)
           .width(200)
