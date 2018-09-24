@@ -21,7 +21,9 @@ dc_leaflet.legend = function() {
                 return this._div;
             },
             _update: function () {
-                if (_parent.colorDomain()) { // check because undefined for marker charts
+                if (!_parent.colorDomain)
+                    console.warn('legend not supported for this dc.leaflet chart type, ignoring');
+                else {
                     var minValue = _parent.colorDomain()[0],
                         maxValue = _parent.colorDomain()[1],
                         palette = _parent.colors().range(),
