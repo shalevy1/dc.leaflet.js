@@ -151,6 +151,7 @@
       var marker = dc_leaflet.markerChart("#demo2 .map",groupname)
           .dimension(facilities)
           .group(facilitiesGroup)
+          .valueAccessor(d => d.value.count)
           .width(600)
           .height(400)
           .center([42.69,25.42])
