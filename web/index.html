@@ -133,7 +133,20 @@
       var xf = crossfilter(data);
       var groupname = "marker-area";
       var facilities = xf.dimension(function(d) { return d.geo; });
-      var facilitiesGroup = facilities.group().reduceCount();
+      var facilitiesGroup = facilities.group().reduce(
+          function(p, v) {
+              p.type = v.type;
+              ++p.count;
+              return p;
+          },
+          function(p, v) {
+              --p.count;
+              return p;
+          },
+          function() {
+              return {count: 0};
+          }
+      );
 
       var marker = dc_leaflet.markerChart("#demo2 .map",groupname)
           .dimension(facilities)
@@ -143,7 +156,37 @@
           .center([42.69,25.42])
           .zoom(7)
           .renderPopup(false)
-          .filterByArea(true);
+          .filterByArea(true)
+          .icon(function(d) {
+              var iconUrl;
+              switch(d.value.type) {
+              case 'solar':
+                  iconUrl = 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-yellow.png';
+                  break;
+              case 'hydro':
+                  iconUrl = 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-blue.png';
+                  break;
+              case 'wind':
+                  iconUrl = 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-green.png';
+                  break;
+              case 'biomass':
+                  iconUrl = 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-grey.png';
+                  break;
+              case 'gas_waste':
+                  iconUrl = 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-orange.png';
+                  break;
+              case 'hydro_waste':
+                  iconUrl = 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-violet.png';
+                  break;
+              default:
+                  console.log('unk', d.value.type);
+                  return new L.Icon.Default();
+              }
+              return new L.Icon({
+                  iconUrl: iconUrl,
+                  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png'
+              });
+          });
 
       var types = xf.dimension(function(d) { return d.type; });
       var typesGroup = types.group().reduceCount();
